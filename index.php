@@ -1,346 +1,194 @@
+<?php
+// Nhúng file kết nối CSDL
+require_once 'db_connect.php';
+
+/** @var PDO $conn */ // <- THÊM DÒNG NÀY: Báo cho VS Code biết $conn là biến PDO toàn cục
+$search_keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+try {
+    if ($search_keyword != '') {
+        // Nếu có nhập từ khóa, tìm kiếm theo tên phim
+        $sql = "SELECT id, title, image, duration, price FROM movies WHERE title LIKE :keyword ORDER BY release_date DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['keyword' => "%$search_keyword%"]);
+    } else {
+        // Nếu không tìm kiếm, hiển thị toàn bộ
+        $sql = "SELECT id, title, image, duration, price FROM movies ORDER BY release_date DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+    }
+    $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch(PDOException $e) {
+    echo "<div class='alert alert-danger text-center'>Lỗi truy vấn dữ liệu: " . $e->getMessage() . "</div>";
+    $movies = [];
+}
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova Cinema</title>
-
+    <title>Trang chủ - Nova Cinema</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-    <div class="container">
-
-        <!-- Brand -->
-        <a class="navbar-brand fw-bold" href="index.php">
-            Nova Cinema
+<nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm py-0 sticky-top z-3">
+    <div class="container align-items-center"> <a class="navbar-brand py-1" href="index.php">
+            <img src="assets/images/logo_vip.png" alt="Nova Cinema Logo" style="height: 60px;" class="d-inline-block">
         </a>
-
-        <!-- Nút menu trên điện thoại -->
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarMenu"
-                aria-controls="navbarMenu"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
             <span class="navbar-toggler-icon"></span>
-
         </button>
 
-        <!-- Menu -->
         <div class="collapse navbar-collapse" id="navbarMenu">
-
-            <ul class="navbar-nav ms-auto">
-
-                <li class="nav-item">
-                    <a class="nav-link active" href="index.php">Trang chủ</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Phim</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Lịch chiếu</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Khuyến mãi</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Liên hệ</a>
-                </li>
-
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 d-flex align-items-center">
+                <li class="nav-item"><a class="nav-link active" href="index.php">Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#danh-sach-phim">Phim</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Lịch chiếu</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Khuyến mãi</a></li>
             </ul>
+            
+            <form class="d-flex me-lg-3 my-2 my-lg-0" action="index.php" method="GET">
+                <input class="form-control me-2 rounded-pill bg-dark text-white border-secondary" type="search" name="search" placeholder="Tìm phim..." value="<?= htmlspecialchars($search_keyword) ?>">
+                <button class="btn btn-outline-warning rounded-pill px-3" type="submit">Tìm</button>
+            </form>
 
-            <a href="#" class="btn btn-warning ms-lg-3">
-                Đăng nhập
-            </a>
-
+            <a href="admin/login.php" class="btn btn-warning fw-bold rounded-pill px-4">Đăng nhập</a>
+            
+            <button id="themeToggle" class="btn btn-outline-secondary rounded-circle ms-lg-3" style="width: 40px; height: 40px;" title="Chuyển giao diện">🌙</button>
         </div>
-
     </div>
 </nav>
-<section class="hero">
-    <div class="container">
-        <div class="row align-items-center">
 
-            <div class="col-lg-6">
-                <h1>Chào mừng đến với Nova Cinema</h1>
-
-                <p>
-                    Đặt vé nhanh chóng, cập nhật lịch chiếu mới nhất và
-                    thưởng thức những bộ phim bom tấn với trải nghiệm tuyệt vời.
-                </p>
-
-                <a href="#" class="btn btn-warning btn-lg">
-                    Đặt vé ngay
-                </a>
-            </div>
-
-            <div class="col-lg-6 text-center">
-                <!-- Sau sẽ thay bằng logo_vip.png -->
-                <img src="assets/images/logo_vip.png"
-     class="img-fluid"
-     alt="Nova Cinema">
-            </div>
-
-        </div>
+<section class="hero-slider bg-black">
+    <div id="novaBanner" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        
+   <div class="carousel-inner">
+    <div class="carousel-item active">
+        <a href="movie-detail.php?id=1"> 
+            <img src="assets/images/movie1.jpg" class="d-block w-100 banner-img" alt="Minions">
+            <div class="banner-overlay"></div>
+        </a>
     </div>
 
-<div class="movie-card">
-    <img src="assets/images/movie1.jpg" alt="Interstellar">
-    <h3>Interstellar</h3>
-    <p>Khoa học viễn tưởng • 169 phút</p>
-    <p class="price">90.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
+    <div class="carousel-item">
+        <a href="movie-detail.php?id=2">
+            <img src="assets/images/movie2.jpg" class="d-block w-100 banner-img" alt="Interstellar">
+            <div class="banner-overlay"></div>
+        </a>
+    </div>
+
+    <div class="carousel-item">
+        <a href="movie-detail.php?id=3">
+            <img src="assets/images/movie3.jpg" class="d-block w-100 banner-img" alt="Oppenheimer">
+            <div class="banner-overlay"></div>
+        </a>
+    </div>
 </div>
 
-<div class="movie-card">
-    <img src="assets/images/movie2.jpg" alt="Oppenheimer">
-    <h3>Oppenheimer</h3>
-    <p>Tiểu sử • 180 phút</p>
-    <p class="price">95.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie3.jpg" alt="Dune Part Two">
-    <h3>Dune: Part Two</h3>
-    <p>Khoa học viễn tưởng • 166 phút</p>
-    <p class="price">95.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie4.jpg" alt="The Conjuring">
-    <h3>The Conjuring</h3>
-    <p>Kinh dị • 112 phút</p>
-    <p class="price">80.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie5.jpg" alt="Your Name">
-    <h3>Your Name</h3>
-    <p>Hoạt hình • 106 phút</p>
-    <p class="price">85.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie6.jpg" alt="Spirited Away">
-    <h3>Spirited Away</h3>
-    <p>Hoạt hình • 125 phút</p>
-    <p class="price">85.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie7.jpg" alt="Parasite">
-    <h3>Parasite</h3>
-    <p>Tâm lý • 132 phút</p>
-    <p class="price">90.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie8.jpg" alt="John Wick 4">
-    <h3>John Wick 4</h3>
-    <p>Hành động • 169 phút</p>
-    <p class="price">95.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie9.jpg" alt="Top Gun Maverick">
-    <h3>Top Gun: Maverick</h3>
-    <p>Hành động • 130 phút</p>
-    <p class="price">90.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie10.jpg" alt="Coco">
-    <h3>Coco</h3>
-    <p>Hoạt hình • 105 phút</p>
-    <p class="price">80.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie11.jpg" alt="La La Land">
-    <h3>La La Land</h3>
-    <p>Nhạc kịch • 128 phút</p>
-    <p class="price">85.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie12.jpg" alt="Titanic">
-    <h3>Titanic</h3>
-    <p>Tình cảm • 194 phút</p>
-    <p class="price">95.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie13.jpg" alt="The Dark Knight">
-    <h3>The Dark Knight</h3>
-    <p>Hành động • 152 phút</p>
-    <p class="price">95.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie14.jpg" alt="Train to Busan">
-    <h3>Train to Busan</h3>
-    <p>Kinh dị • 118 phút</p>
-    <p class="price">85.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie15.jpg" alt="LOTR">
-    <h3>Lord of the Rings:The Fellowship of the Ring</h3>
-    <p>Fantasy • 178 phút</p>
-    <p class="price">100.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie16.jpg" alt="Harry Potter">
-    <h3>Harry Potter and the Philosopher's Stone</h3>
-    <p>Fantasy • 152 phút</p>
-    <p class="price">90.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie17.jpg" alt="Inside Out 2">
-    <h3>Inside Out 2</h3>
-    <p>Hoạt hình • 96 phút</p>
-    <p class="price">80.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie18.jpg" alt="Mission Impossible">
-    <h3>Mission Impossible – Dead Reckoning</h3>
-    <p>Hành động • 163 phút</p>
-    <p class="price">95.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie19.jpg" alt="Mario">
-    <h3>Super Mario Bros Movie</h3>
-    <p>Hoạt hình • 92 phút</p>
-    <p class="price">80.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
-
-<div class="movie-card">
-    <img src="assets/images/movie20.jpg" alt="Conan">
-    <h3>Detective Conan: The Million-dollar Pentagram</h3>
-    <p>Trinh thám • 111 phút</p>
-    <p class="price">85.000 VNĐ</p>
-    <a href="movie-detail.php" class="btn-detail">
-    Chi tiết
-</a>
-</div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#novaBanner" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#novaBanner" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
 </section>
-<footer>
-
-    <div class="footer-container">
-
-        <div class="footer-about">
-
-            <h2>Nova Cinema</h2>
-
-            <p>
-                Nova Cinema mang đến trải nghiệm xem phim hiện đại,
-                đặt vé nhanh chóng và tiện lợi.
-            </p>
-
+<!-- Danh sách phim -->
+<section class="py-5" id="danh-sach-phim">
+    <div class="container">
+        <h2 class="mb-4 fw-bold">Phim Đang Chiếu</h2>
+        
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            <?php if (empty($movies)): ?>
+                <div class="col-12 text-center py-5">
+                    <h5 class="text-secondary">Hiện tại chưa có bộ phim nào được cập nhật.</h5>
+                </div>
+            <?php else: ?>
+                <?php foreach ($movies as $movie): ?>
+                    <div class="col">
+                        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
+                            <!-- Ảnh phim -->
+                            <img src="assets/images/<?= htmlspecialchars($movie['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($movie['title']) ?>" style="height: 300px; object-fit: cover;">
+                            
+                            <div class="card-body">
+                                <h5 class="card-title text-truncate fw-bold"><?= htmlspecialchars($movie['title']) ?></h5>
+                                <p class="card-text text-body-secondary small mb-2">
+                                    ⏱️ <?= htmlspecialchars($movie['duration']) ?> phút
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-danger fw-bold fs-5"><?= number_format($movie['price'], 0, ',', '.') ?>đ</span>
+                                    <a href="movie-detail.php?id=<?= $movie['id'] ?>" class="btn btn-warning rounded-pill px-3">Đặt vé</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
-
-        <div class="footer-contact">
-
-            <h3>Liên hệ</h3>
-
-            <p>📍 Đầm Dơi, Cà Mau</p>
-
-            <p>📞 0123 456 789</p>
-
-            <p>✉️ novacinema@gmail.com</p>
-
-        </div>
-
-        <div class="footer-social">
-
-            <h3>Theo dõi chúng tôi</h3>
-
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">YouTube</a>
-
-        </div>
-
     </div>
+</section>
 
-    <hr>
-
-    <p class="copyright">
-        © 2026 Nova Cinema. All Rights Reserved.
-    </p>
-
+<footer class="bg-body-tertiary pt-5 pb-3 mt-auto border-top">
+    <div class="container">
+        <div class="row gy-4 text-center text-md-start">
+            <div class="col-md-4">
+                <h3 class="text-warning fw-bold mb-3">Nova Cinema</h3>
+                <p class="text-body-secondary">Nova Cinema mang đến trải nghiệm xem phim hiện đại, không gian sang trọng và dịch vụ đặt vé tiện lợi nhất.</p>
+            </div>
+            <div class="col-md-4">
+                <h5 class="text-warning mb-3">Liên hệ</h5>
+                <p class="mb-1 text-body-secondary">📍 Đầm Dơi, Cà Mau</p>
+                <p class="mb-1 text-body-secondary">📞 0123 456 789</p>
+                <p class="text-body-secondary">✉️ novacinema@gmail.com</p>
+            </div>
+            <div class="col-md-4">
+                <h5 class="text-warning mb-3">Kết nối</h5>
+                <a href="#" class="d-block text-body-secondary text-decoration-none mb-2 footer-link">Facebook</a>
+                <a href="#" class="d-block text-body-secondary text-decoration-none mb-2 footer-link">Instagram</a>
+                <a href="#" class="d-block text-body-secondary text-decoration-none footer-link">YouTube</a>
+            </div>
+        </div>
+        <hr class="border-secondary my-4">
+        <p class="text-center text-body-secondary mb-0 small">© 2026 Nova Cinema. All Rights Reserved.</p>
+    </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Script Xử lý Dark/Light Mode -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        // 1. Kiểm tra dữ liệu cũ
+        const savedTheme = localStorage.getItem('nova_theme');
+        
+        // 2. Thiết lập mặc định
+        if (savedTheme) {
+            htmlElement.setAttribute('data-bs-theme', savedTheme);
+            themeToggleBtn.innerHTML = savedTheme === 'dark' ? '☀️' : '🌙';
+        } else {
+            // Nếu khách chưa từng vào web, ÉP mặc định là nền Sáng
+            htmlElement.setAttribute('data-bs-theme', 'light');
+            themeToggleBtn.innerHTML = '🌙';
+            localStorage.setItem('nova_theme', 'light');
+        }
+
+        // 3. Xử lý nút bấm
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('nova_theme', newTheme);
+            themeToggleBtn.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+    });
+</script>
 </body>
 </html>
