@@ -99,11 +99,11 @@ try {
     </div>
 </section>
 <!-- Danh sách phim -->
-<section class="py-5" id="danh-sach-phim">
+<section class="py-4 py-md-5" id="danh-sach-phim">
     <div class="container">
-        <h2 class="mb-4 fw-bold">Phim Đang Chiếu</h2>
+        <h2 class="mb-4 fw-bold fs-4 fs-md-2">Phim Đang Chiếu</h2>
         
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-4 g-3 g-md-4">
             <?php if (empty($movies)): ?>
                 <div class="col-12 text-center py-5">
                     <h5 class="text-secondary">Hiện tại chưa có bộ phim nào được cập nhật.</h5>
@@ -112,17 +112,18 @@ try {
                 <?php foreach ($movies as $movie): ?>
                     <div class="col">
                         <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
-                            <!-- Ảnh phim -->
-                            <img src="assets/images/<?= htmlspecialchars($movie['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($movie['title']) ?>" style="height: 300px; object-fit: cover;">
+                            <img src="assets/images/<?= htmlspecialchars($movie['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($movie['title']) ?>" style="aspect-ratio: 2/3; width: 100%; object-fit: cover;">
                             
-                            <div class="card-body">
-                                <h5 class="card-title text-truncate fw-bold"><?= htmlspecialchars($movie['title']) ?></h5>
-                                <p class="card-text text-body-secondary small mb-2">
+                            <div class="card-body p-2 p-md-3 d-flex flex-column">
+                                <h6 class="card-title text-truncate fw-bold mb-1" style="font-size: 0.9rem; max-width: 100%;"><?= htmlspecialchars($movie['title']) ?></h6>
+                                
+                                <p class="card-text text-body-secondary mb-3" style="font-size: 0.75rem;">
                                     ⏱️ <?= htmlspecialchars($movie['duration']) ?> phút
                                 </p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-danger fw-bold fs-5"><?= number_format($movie['price'], 0, ',', '.') ?>đ</span>
-                                    <a href="movie-detail.php?id=<?= $movie['id'] ?>" class="btn btn-warning rounded-pill px-3">Đặt vé</a>
+                                
+                                <div class="mt-auto d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center gap-2">
+                                    <span class="text-danger fw-bold" style="font-size: 0.85rem; min-width: max-content;"><?= number_format($movie['price'], 0, ',', '.') ?>đ</span>
+                                    <a href="movie-detail.php?id=<?= $movie['id'] ?>" class="btn btn-warning btn-sm fw-bold rounded px-2 py-1 w-100 w-sm-auto" style="font-size: 0.75rem;">Đặt vé</a>
                                 </div>
                             </div>
                         </div>

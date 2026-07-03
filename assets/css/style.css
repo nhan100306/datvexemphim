@@ -36,17 +36,29 @@ font-family: Arial, Helvetica, sans-serif;
 .footer-link:hover {
     color: #ffc107 !important;
 }
-/* ================= BANNER GALAXY PLAY STYLE ================= */
-.hero-slider {
-    position: relative;
+/* ================= TỐI ƯU BANNER CHUẨN ĐIỆN ẢNH ================= */
+/* Ép toàn bộ khung Carousel tự động co giãn theo ảnh */
+.hero-slider .carousel-inner, 
+.hero-slider .carousel-item {
+    height: auto !important;
 }
 
-/* Tối ưu ảnh banner để không bị vỡ */
+/* Cấu hình ảnh Banner */
 .banner-img {
-    width: 100%;
-    height: auto; /* Bỏ height: 500px đi, chuyển thành auto */
-    aspect-ratio: 16 / 9; /* Ép khung hiển thị đúng chuẩn tỷ lệ 16:9 của ảnh */
-    object-fit: cover;
+    width: 100% !important;
+    height: auto !important;
+    /* Dùng tỷ lệ 16:9 chuẩn YouTube/Cinema cho mọi thiết bị */
+    aspect-ratio: 16 / 9 !important; 
+    object-fit: cover !important;
+    /* Căn trọng tâm ảnh: ưu tiên hiển thị phần trên và giữa (giữ lại mặt nhân vật) */
+    object-position: center top !important; 
+}
+
+/* Nếu màn hình điện thoại, làm banner dẹt hơn một chút nữa để tiết kiệm chỗ (tuỳ chọn) */
+@media (max-width: 768px) {
+    .banner-img {
+        aspect-ratio: 21 / 9 !important; /* Tỷ lệ siêu rộng (Ultrawide) cực kỳ sang trọng trên mobile */
+    }
 }
 
 /* Làm tối banner hơn để chữ nổi bật lên */
