@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 04, 2026 at 10:03 AM
+-- Generation Time: Jul 04, 2026 at 07:42 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -24,18 +24,77 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `booked_seats`
+--
+
+CREATE TABLE `booked_seats` (
+  `id` int(11) NOT NULL,
+  `booking_id` int(11) NOT NULL,
+  `seat_name` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `booked_seats`
+--
+
+INSERT INTO `booked_seats` (`id`, `booking_id`, `seat_name`) VALUES
+(1, 1, 'A6'),
+(2, 2, 'A7'),
+(3, 2, 'A8'),
+(4, 3, 'A5'),
+(5, 3, 'B5'),
+(6, 3, 'B6'),
+(7, 4, 'A2'),
+(8, 4, 'C2'),
+(9, 4, 'C6'),
+(10, 4, 'D4'),
+(11, 4, 'D5'),
+(12, 5, 'B7'),
+(13, 6, 'A8'),
+(14, 7, 'A6'),
+(15, 8, 'B4'),
+(16, 8, 'B5'),
+(17, 8, 'B6'),
+(18, 9, 'B4'),
+(19, 9, 'B5'),
+(20, 9, 'C4'),
+(21, 10, 'A4'),
+(22, 10, 'A5'),
+(23, 11, 'A4'),
+(24, 12, 'A1');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `bookings`
 --
 
 CREATE TABLE `bookings` (
   `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `movie_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  `showtime_id` int(11) NOT NULL,
+  `customer_name` varchar(100) NOT NULL,
+  `customer_phone` varchar(20) NOT NULL,
   `total_price` int(11) NOT NULL,
-  `booking_date` datetime DEFAULT current_timestamp(),
-  `status` tinyint(4) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `booking_date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `bookings`
+--
+
+INSERT INTO `bookings` (`id`, `showtime_id`, `customer_name`, `customer_phone`, `total_price`, `booking_date`) VALUES
+(1, 2, 'Thành Viên Nova', '0909123456', 95000, '2026-07-04 21:41:43'),
+(2, 3, 'Thành Viên Nova', '0909123456', 190000, '2026-07-04 21:42:06'),
+(3, 2, 'Thành Viên Nova', '0909123456', 285000, '2026-07-04 21:42:20'),
+(4, 3, 'Thành Viên Nova', '0909123456', 475000, '2026-07-04 21:44:19'),
+(5, 2, 'Thành Viên Nova', '0909123456', 95000, '2026-07-04 21:44:29'),
+(6, 6, 'Thành Viên Nova', '0909123456', 95000, '2026-07-04 21:46:25'),
+(7, 10, 'Thành Viên Nova', '0909123456', 85000, '2026-07-04 22:15:18'),
+(8, 10, 'Thành Viên Nova', '0909123456', 255000, '2026-07-04 22:17:26'),
+(9, 15, 'Thành Viên Nova', '0909123456', 285000, '2026-07-04 22:35:05'),
+(10, 6, 'Thành Viên Nova', '0909123456', 190000, '2026-07-04 22:39:46'),
+(11, 23, 'Thành Viên Nova', '0909123456', 95000, '2026-07-04 23:01:11'),
+(12, 7, 'Thành Viên Nova', '0909123456', 95000, '2026-07-04 23:02:17');
 
 -- --------------------------------------------------------
 
@@ -141,12 +200,18 @@ CREATE TABLE `users` (
 --
 
 --
+-- Indexes for table `booked_seats`
+--
+ALTER TABLE `booked_seats`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `booking_id` (`booking_id`);
+
+--
 -- Indexes for table `bookings`
 --
 ALTER TABLE `bookings`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `movie_id` (`movie_id`);
+  ADD KEY `showtime_id` (`showtime_id`);
 
 --
 -- Indexes for table `movies`
@@ -174,10 +239,16 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `booked_seats`
+--
+ALTER TABLE `booked_seats`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `movies`
@@ -202,11 +273,16 @@ ALTER TABLE `users`
 --
 
 --
+-- Constraints for table `booked_seats`
+--
+ALTER TABLE `booked_seats`
+  ADD CONSTRAINT `fk_seat_booking` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `bookings`
 --
 ALTER TABLE `bookings`
-  ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_booking_showtime` FOREIGN KEY (`showtime_id`) REFERENCES `showtimes` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `showtimes`

@@ -12,18 +12,45 @@ $phim_sap_chieu = [];
 // Lấy ngày hiện tại định dạng chuẩn của Database (YYYY-MM-DD)
 $today = date('Y-m-d');
 
+// === 1. CẤU HÌNH PHÂN TRANG ===
+$limit = 8; // Số phim muốn hiển thị trên 1 trang (bạn có thể đổi thành 4, 12... tùy ý)
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page <= 0) $page = 1;
+$offset = ($page - 1) * $limit;
+// ===============================
+
 try {
     if ($search_keyword != '') {
-        // LƯU Ý: Đã thêm cột release_date vào phần SELECT
-        $sql = "SELECT id, title, image, duration, price, release_date FROM movies WHERE title LIKE :keyword ORDER BY release_date DESC";
+        // ĐẾM TỔNG SỐ PHIM KHI CÓ TÌM KIẾM
+        $sql_count = "SELECT COUNT(*) FROM movies WHERE title LIKE :keyword";
+        $stmt_count = $conn->prepare($sql_count);
+        $stmt_count->execute(['keyword' => "%$search_keyword%"]);
+        $total_movies = $stmt_count->fetchColumn();
+
+        // Lấy phim có phân trang (LIMIT & OFFSET)
+        $sql = "SELECT id, title, image, duration, price, release_date FROM movies WHERE title LIKE :keyword ORDER BY release_date DESC LIMIT :limit OFFSET :offset";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['keyword' => "%$search_keyword%"]);
+        $stmt->bindValue(':keyword', "%$search_keyword%", PDO::PARAM_STR);
     } else {
-        // LƯU Ý: Đã thêm cột release_date vào phần SELECT
-        $sql = "SELECT id, title, image, duration, price, release_date FROM movies ORDER BY release_date DESC";
+        // ĐẾM TỔNG SỐ PHIM KHI KHÔNG TÌM KIẾM
+        $sql_count = "SELECT COUNT(*) FROM movies";
+        $stmt_count = $conn->prepare($sql_count);
+        $stmt_count->execute();
+        $total_movies = $stmt_count->fetchColumn();
+
+        // Lấy phim có phân trang (LIMIT & OFFSET)
+        $sql = "SELECT id, title, image, duration, price, release_date FROM movies ORDER BY release_date DESC LIMIT :limit OFFSET :offset";
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
     }
+
+    // === 2. TÍNH TỔNG SỐ TRANG ===
+    $total_pages = ceil($total_movies / $limit);
+
+    // Bind giá trị phân trang (Bắt buộc dùng bindValue cho LIMIT/OFFSET)
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+    $stmt->execute();
 
     // Lấy toàn bộ dữ liệu ra
     $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -41,6 +68,7 @@ try {
 } catch (PDOException $e) {
     echo "<div class='alert alert-danger text-center'>Lỗi truy vấn dữ liệu: " . $e->getMessage() . "</div>";
     $movies = [];
+    $total_pages = 1; // Gán mặc định 1 trang để không bị lỗi giao diện phía dưới
 }
 ?>
 <!DOCTYPE html>
@@ -70,17 +98,17 @@ try {
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 d-flex align-items-center">
                     <li class="nav-item"><a class="nav-link active" href="index.php">Trang chủ</a></li>
                     <li class="nav-item"><a class="nav-link" href="#danh-sach-phim">Phim</a></li>
-                <li class="nav-item"><a class="nav-link" href="lich-chieu.php">Lịch chiếu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="lich-chieu.php">Lịch chiếu</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#quickBookModal">Đặt vé</a></li>
 
-                <form class="d-flex me-lg-3 my-2 my-lg-0" action="index.php" method="GET">
-                    <input class="form-control me-2 rounded-pill bg-dark text-white border-secondary" type="search" name="search" placeholder="Tìm phim..." value="<?= htmlspecialchars($search_keyword) ?>">
-                    <button class="btn btn-outline-warning rounded-pill px-3" type="submit">Tìm</button>
-                </form>
+                    <form class="d-flex me-lg-3 my-2 my-lg-0" action="index.php" method="GET">
+                        <input class="form-control me-2 rounded-pill bg-dark text-white border-secondary" type="search" name="search" placeholder="Tìm phim..." value="<?= htmlspecialchars($search_keyword) ?>">
+                        <button class="btn btn-outline-warning rounded-pill px-3" type="submit">Tìm</button>
+                    </form>
 
-                <a href="admin/login.php" class="btn btn-warning fw-bold rounded-pill px-4">Đăng nhập</a>
+                    <a href="admin/login.php" class="btn btn-warning fw-bold rounded-pill px-4">Đăng nhập</a>
 
-                <button id="themeToggle" class="btn btn-outline-secondary rounded-circle ms-lg-3" style="width: 40px; height: 40px;" title="Chuyển giao diện">🌙</button>
+                    <button id="themeToggle" class="btn btn-outline-secondary rounded-circle ms-lg-3" style="width: 40px; height: 40px;" title="Chuyển giao diện">🌙</button>
             </div>
         </div>
     </nav>
@@ -167,6 +195,34 @@ try {
                                     </div>
                                 </div>
                             <?php endforeach; ?>
+                            <?php if ($total_pages > 1): ?>
+                                <nav aria-label="Điều hướng trang phim" class="mt-5 mb-4">
+                                    <ul class="pagination justify-content-center">
+
+                                        <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                                            <a class="page-link shadow-sm" href="?page=<?= $page - 1 ?><?= isset($_GET['search']) ? '&search=' . htmlspecialchars($_GET['search']) : '' ?>" tabindex="-1">
+                                                &laquo; Trước
+                                            </a>
+                                        </li>
+
+                                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                            <li class="page-item <?= ($page == $i) ? 'active' : '' ?>">
+                                                <a class="page-link shadow-sm <?= ($page == $i) ? 'bg-warning border-warning text-dark fw-bold' : 'text-dark' ?>"
+                                                    href="?page=<?= $i ?><?= isset($_GET['search']) ? '&search=' . htmlspecialchars($_GET['search']) : '' ?>">
+                                                    <?= $i ?>
+                                                </a>
+                                            </li>
+                                        <?php endfor; ?>
+
+                                        <li class="page-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+                                            <a class="page-link shadow-sm" href="?page=<?= $page + 1 ?><?= isset($_GET['search']) ? '&search=' . htmlspecialchars($_GET['search']) : '' ?>">
+                                                Sau &raquo;
+                                            </a>
+                                        </li>
+
+                                    </ul>
+                                </nav>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -256,7 +312,24 @@ try {
             });
         });
     </script>
-<?php include_once 'quick_book_modal.php'; ?>
+HTML
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // NÂNG CẤP: Bổ sung thêm điều kiện urlParams.has('page')
+        if (urlParams.has('search') || urlParams.has('keyword') || urlParams.has('page')) {
+            const phimSection = document.getElementById('danh-sach-phim');
+            if (phimSection) {
+                // Trượt êm ái xuống khu vực phim
+                setTimeout(() => {
+                    phimSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+            }
+        }
+    });
+</script>
+    <?php include_once 'quick_book_modal.php'; ?>
 </body>
 
 </html>
