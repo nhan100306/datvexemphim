@@ -78,8 +78,8 @@ if ($movie_id > 0) {
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 d-flex align-items-center">
                     <li class="nav-item"><a class="nav-link" href="index.php">Trang chủ</a></li>
                     <li class="nav-item"><a class="nav-link active" href="index.php#danh-sach-phim">Phim</a></li>
-<li class="nav-item"><a class="nav-link" href="lich-chieu.php">Lịch chiếu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Đặt vé</a></li>
+                    <li class="nav-item"><a class="nav-link" href="lich-chieu.php">Lịch chiếu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#quickBookModal">Đặt vé</a></li>
                 </ul>
                 <form class="d-flex me-lg-3 my-2 my-lg-0" action="index.php" method="GET">
                     <input class="form-control me-2 rounded-pill bg-dark text-white border-secondary" type="search" name="search" placeholder="Tìm phim...">
@@ -156,9 +156,9 @@ if ($movie_id > 0) {
                                     <small class="text-light opacity-50 d-block">Giá vé chỉ từ</small>
                                     <span class="text-danger fw-bold fs-2"><?= number_format($movie['price'], 0, ',', '.') ?> VNĐ</span>
                                 </div>
-                                <a href="booking.php?movie_id=<?= $movie['id'] ?>" class="btn btn-warning btn-lg rounded-pill px-5 py-3 fw-bold shadow-lg">
-                                    🎟️ ĐẶT VÉ NGAY
-                                </a>
+                                <button class="btn btn-warning fw-bold px-4 py-2 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#quickBookModal" onclick="preselectMovie(<?= $movie['id'] ?>)">
+                                    🎟️ĐẶT VÉ NGAY
+                                </button>
                             </div>
                         </div>
 
@@ -226,7 +226,7 @@ if ($movie_id > 0) {
                                             $hot_text = "";
                                         }
                                     ?>
-                                        <a href="index.php?p=dat-ve&id=<?= $current_movie_id ?>&date=<?= $target_date ?>&time=<?= $time_formatted ?>&format=<?= urlencode($suat['format']) ?>"
+                                        <a href="booking.php?id=<?= $current_movie_id ?>&date=<?= $target_date ?>&time=<?= $time_formatted ?>&format=<?= urlencode($suat['format']) ?>"
                                             class="<?= $btn_class ?> px-4 py-2">
                                             <?= $time_formatted ?> - <?= htmlspecialchars($suat['format']) ?><?= $hot_text ?>
                                         </a>
@@ -238,8 +238,22 @@ if ($movie_id > 0) {
                 </div>
             </section>
         <?php endif; ?>
-        </main>
 
+        </main>
+        <?php include_once 'quick_book_modal.php'; ?>
+        <script>
+            function preselectMovie(movieId) {
+                // Đợi 200ms để Popup kịp mở ra rồi mới thao tác
+                setTimeout(() => {
+                    const selectMovie = document.getElementById('qb-movie');
+                    if (selectMovie) {
+                        selectMovie.value = movieId;
+                        // Kích hoạt sự kiện 'change' để hệ thống tự động tải Ngày chiếu tương ứng
+                        selectMovie.dispatchEvent(new Event('change'));
+                    }
+                }, 200);
+            }
+        </script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Script Xử lý Dark/Light Mode -->

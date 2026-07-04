@@ -1,5 +1,5 @@
 <?php
-require_once 'db_connect.php'; 
+require_once 'db_connect.php';
 
 // 1. Lấy ngày từ URL, nếu không có thì mặc định lấy ngày hôm nay (2026-07-04)
 $selected_date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
@@ -8,7 +8,7 @@ $timestamp = strtotime($selected_date);
 $days_vn = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
 $today_name = $days_vn[date('w', $timestamp)];
 $today_date = date('d/m/Y', $timestamp);
-$db_date = date('Y-m-d', $timestamp); 
+$db_date = date('Y-m-d', $timestamp);
 
 // 2. Truy vấn Database lấy lịch chiếu theo ngày được chọn
 $sql_schedule = "
@@ -43,6 +43,7 @@ foreach ($all_showtimes as $row) {
 ?>
 <!DOCTYPE html>
 <html lang="vi" data-bs-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,6 +57,7 @@ foreach ($all_showtimes as $row) {
         }
     </style>
 </head>
+
 <body class="d-flex flex-column min-vh-100 bg-body-tertiary">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm py-0 sticky-top">
@@ -71,7 +73,7 @@ foreach ($all_showtimes as $row) {
                     <li class="nav-item"><a class="nav-link" href="index.php">Trang chủ</a></li>
                     <li class="nav-item"><a class="nav-link" href="index.php#danh-sach-phim">Phim</a></li>
                     <li class="nav-item"><a class="nav-link active" href="lich-chieu.php">Lịch chiếu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="booking.php">Đặt vé</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#quickBookModal">Đặt vé</a></li>
                 </ul>
                 <button id="themeToggle" class="btn btn-outline-secondary rounded-circle ms-lg-3" style="width: 40px; height: 40px;">🌙</button>
             </div>
@@ -80,7 +82,7 @@ foreach ($all_showtimes as $row) {
 
     <main class="flex-grow-1">
         <div class="container py-5 mt-2">
-            
+
             <h3 class="fw-bold mb-4 border-start border-4 border-warning ps-3">LỊCH CHIẾU PHIM</h3>
 
             <div class="d-flex flex-wrap gap-2 mb-4 bg-white p-3 rounded-3 shadow-sm border">
@@ -94,19 +96,19 @@ foreach ($all_showtimes as $row) {
                     $date_string = $dt->format('Y-m-d');
                     $date_display = $dt->format('d/m');
                     $w = $dt->format('w');
-                    
+
                     // Đổi tên hiển thị ngày hôm nay cho thân thiện
                     $day_label = ($date_string == date('Y-m-d')) ? "Hôm nay" : $days_vn[$w];
-                    
+
                     // Nếu ngày đang lặp trùng với ngày người dùng đang xem -> Tô màu vàng active
                     $is_active = ($date_string == $db_date);
                     $btn_class = $is_active ? "btn btn-warning fw-bold text-dark shadow-sm" : "btn btn-outline-dark";
-                    ?>
+                ?>
                     <a href="lich-chieu.php?date=<?= $date_string ?>" class="btn <?= $btn_class ?> date-btn text-center py-2">
                         <small class="d-block opacity-75" style="font-size: 0.75rem;"><?= $day_label ?></small>
                         <span class="fs-5"><?= $date_display ?></span>
                     </a>
-                    <?php
+                <?php
                 }
                 ?>
             </div>
@@ -127,38 +129,39 @@ foreach ($all_showtimes as $row) {
                                     </td>
                                 </tr>
                             <?php else: ?>
-                                <?php $stt = 1; foreach ($movies_schedule as $movie): ?>
-                                <tr class="border-bottom">
-                                    <td class="bg-light text-center fw-bold text-secondary" style="width: 5%; font-size: 1.2rem;">
-                                        <?= $stt++ ?>
-                                    </td>
-                                    <td class="ps-4" style="width: 35%;">
-                                        <div class="d-flex align-items-center">
-                                            <span class="badge bg-danger rounded-1 me-3 fs-6 px-2 py-1 shadow-sm">2D</span>
-                                            <div>
-                                                <a href="movie-detail.php?id=<?= $movie['id'] ?>" class="text-decoration-none text-body fw-bold" style="font-size: 1.1rem;">
-                                                    <?= htmlspecialchars($movie['title']) ?>
-                                                </a>
-                                                <div class="text-muted mt-1" style="font-size: 0.85rem;">
-                                                    <span class="fw-bold text-secondary border border-secondary px-1 rounded me-2">C13</span>
-                                                    ⏱️ <?= $movie['duration'] ?> phút
+                                <?php $stt = 1;
+                                foreach ($movies_schedule as $movie): ?>
+                                    <tr class="border-bottom">
+                                        <td class="bg-light text-center fw-bold text-secondary" style="width: 5%; font-size: 1.2rem;">
+                                            <?= $stt++ ?>
+                                        </td>
+                                        <td class="ps-4" style="width: 35%;">
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-danger rounded-1 me-3 fs-6 px-2 py-1 shadow-sm">2D</span>
+                                                <div>
+                                                    <a href="movie-detail.php?id=<?= $movie['id'] ?>" class="text-decoration-none text-body fw-bold" style="font-size: 1.1rem;">
+                                                        <?= htmlspecialchars($movie['title']) ?>
+                                                    </a>
+                                                    <div class="text-muted mt-1" style="font-size: 0.85rem;">
+                                                        <span class="fw-bold text-secondary border border-secondary px-1 rounded me-2">C13</span>
+                                                        ⏱️ <?= $movie['duration'] ?> phút
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td class="pe-3" style="width: 60%;">
-                                        <div class="d-flex flex-wrap gap-2 py-3">
-                                            <?php foreach ($movie['shows'] as $suat): 
-                                                $btn_class = ($suat['is_hot'] == 1) ? "btn btn-outline-danger btn-sm fw-bold" : "btn btn-outline-secondary btn-sm fw-bold text-dark";
-                                            ?>
-                                                <a href="booking.php?id=<?= $movie['id'] ?>&date=<?= $db_date ?>&time=<?= $suat['time'] ?>" 
-                                                   class="<?= $btn_class ?> px-3 py-1" style="background-color: #fcfcfc;">
-                                                    <?= $suat['time'] ?>
-                                                </a>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td class="pe-3" style="width: 60%;">
+                                            <div class="d-flex flex-wrap gap-2 py-3">
+                                                <?php foreach ($movie['shows'] as $suat):
+                                                    $btn_class = ($suat['is_hot'] == 1) ? "btn btn-outline-danger btn-sm fw-bold" : "btn btn-outline-secondary btn-sm fw-bold text-dark";
+                                                ?>
+                                                    <a href="booking.php?id=<?= $movie['id'] ?>&date=<?= $db_date ?>&time=<?= $suat['time'] ?>"
+                                                        class="<?= $btn_class ?> px-3 py-1" style="background-color: #fcfcfc;">
+                                                        <?= $suat['time'] ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </tbody>
@@ -167,7 +170,7 @@ foreach ($all_showtimes as $row) {
             </div>
         </div>
     </main>
-
+    <?php include_once 'quick_book_modal.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -188,4 +191,5 @@ foreach ($all_showtimes as $row) {
         });
     </script>
 </body>
+
 </html>
