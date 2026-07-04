@@ -78,7 +78,7 @@ if ($movie_id > 0) {
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 d-flex align-items-center">
                     <li class="nav-item"><a class="nav-link" href="index.php">Trang chủ</a></li>
                     <li class="nav-item"><a class="nav-link active" href="index.php#danh-sach-phim">Phim</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Lịch chiếu</a></li>
+<li class="nav-item"><a class="nav-link" href="lich-chieu.php">Lịch chiếu</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Đặt vé</a></li>
                 </ul>
                 <form class="d-flex me-lg-3 my-2 my-lg-0" action="index.php" method="GET">
