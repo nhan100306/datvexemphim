@@ -1,0 +1,130 @@
+/* Thiết lập nền chung */
+body {
+font-family: Arial, Helvetica, sans-serif;
+}
+
+.bg-black {
+    background-color: #000 !important;
+}
+
+/* Custom Navbar */
+.nav-link {
+    font-size: 16px;
+    margin: 0 5px;
+    transition: color 0.3s ease;
+}
+.nav-link:hover {
+    color: #ffc107 !important;
+}
+.form-control::placeholder {
+    color: #888;
+}
+
+.movie-card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; /* Biến con trỏ chuột thành hình bàn tay */
+}
+
+.movie-card-hover:hover {
+    transform: translateY(-10px); /* Đẩy thẻ phim nhô lên 10px */
+    box-shadow: 0 15px 25px rgba(255, 193, 7, 0.2) !important; /* Thêm bóng đổ màu vàng nhẹ cho hợp tone Nova Cinema */
+}
+
+/* Hiệu ứng Link Footer */
+.footer-link {
+    transition: color 0.3s ease;
+}
+.footer-link:hover {
+    color: #ffc107 !important;
+}
+/* ================= TỐI ƯU BANNER CHUẨN ĐIỆN ẢNH ================= */
+/* Ép toàn bộ khung Carousel tự động co giãn theo ảnh */
+.hero-slider .carousel-inner, 
+.hero-slider .carousel-item {
+    height: auto !important;
+}
+
+/* Cấu hình ảnh Banner */
+.banner-img {
+    width: 100% !important;
+    height: auto !important;
+    /* Dùng tỷ lệ 16:9 chuẩn YouTube/Cinema cho mọi thiết bị */
+    aspect-ratio: 16 / 9 !important; 
+    object-fit: cover !important;
+    /* Căn trọng tâm ảnh: ưu tiên hiển thị phần trên và giữa (giữ lại mặt nhân vật) */
+    object-position: center top !important; 
+}
+
+/* Nếu màn hình điện thoại, làm banner dẹt hơn một chút nữa để tiết kiệm chỗ (tuỳ chọn) */
+@media (max-width: 768px) {
+    .banner-img {
+        aspect-ratio: 21 / 9 !important; /* Tỷ lệ siêu rộng (Ultrawide) cực kỳ sang trọng trên mobile */
+    }
+}
+
+/* Làm tối banner hơn để chữ nổi bật lên */
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Tăng độ tối lên 0.7 thay vì 0.4 để che bớt chữ thừa trong ảnh gốc */
+    background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.1) 100%);
+}
+
+.banner-content {
+    bottom: 15%; /* Nâng chữ lên một chút */
+    left: 8%;    /* Đẩy chữ sang trái */
+    width: 50%;  /* Giới hạn độ rộng của chữ để không tràn hết màn hình */
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .banner-content {
+        width: 90%;
+        left: 5%;
+    }
+    .banner-img {
+        height: 50vh;
+    }
+}
+/* Custom giao diện Tab giống Galaxy Cinema */
+    .galaxy-tab-container {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #e0e0e0;
+        margin-bottom: 20px;
+    }
+    
+    .galaxy-title {
+        border-left: 4px solid #034ea2; /* Màu xanh của gạch dọc */
+        padding-left: 10px;
+        color: #333;
+        margin-right: 30px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .galaxy-nav-tabs {
+        border-bottom: none; /* Xóa viền mặc định của Bootstrap */
+    }
+
+    .galaxy-nav-tabs .nav-link {
+        color: #777; /* Màu chữ khi chưa chọn */
+        font-weight: 600;
+        font-size: 1.1rem;
+        border: none;
+        padding: 10px 15px;
+        background: transparent;
+    }
+
+    .galaxy-nav-tabs .nav-link:hover {
+        color: #034ea2;
+    }
+
+    .galaxy-nav-tabs .nav-link.active {
+        color: #034ea2 !important; /* Màu xanh khi được chọn */
+        border-bottom: 3px solid #034ea2 !important; /* Gạch dưới màu xanh */
+        background: transparent !important;
+    }
