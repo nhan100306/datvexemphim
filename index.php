@@ -71,8 +71,7 @@ try {
                     <li class="nav-item"><a class="nav-link active" href="index.php">Trang chủ</a></li>
                     <li class="nav-item"><a class="nav-link" href="#danh-sach-phim">Phim</a></li>
                 <li class="nav-item"><a class="nav-link" href="lich-chieu.php">Lịch chiếu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Đặt vé</a></li>
-                </ul>
+                    <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#quickBookModal">Đặt vé</a></li>
 
                 <form class="d-flex me-lg-3 my-2 my-lg-0" action="index.php" method="GET">
                     <input class="form-control me-2 rounded-pill bg-dark text-white border-secondary" type="search" name="search" placeholder="Tìm phim..." value="<?= htmlspecialchars($search_keyword) ?>">
@@ -162,7 +161,7 @@ try {
                                             </p>
                                             <div class="mt-auto d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center gap-2">
                                                 <span class="text-danger fw-bold" style="font-size: 0.85rem; min-width: max-content;"><?= number_format($movie['price'], 0, ',', '.') ?>đ</span>
-                                                <a href="movie-detail.php?id=<?= $movie['id'] ?>" class="btn btn-warning btn-sm fw-bold rounded px-2 py-1 w-100 w-sm-auto" style="font-size: 0.75rem;">Đặt vé</a>
+                                                <a href="movie-detail.php?id=<?= $movie['id'] ?>" class="btn btn-warning btn-sm fw-bold rounded px-2 py-1 w-100 w-sm-auto" style="font-size: 0.75rem;">Xem chi tiết</a>
                                             </div>
                                         </div>
                                     </div>
@@ -191,7 +190,7 @@ try {
                                             </p>
                                             <div class="mt-auto d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center gap-2">
                                                 <span class="text-danger fw-bold" style="font-size: 0.85rem; min-width: max-content;"><?= number_format($movie['price'], 0, ',', '.') ?>đ</span>
-                                                <a href="movie-detail.php?id=<?= $movie['id'] ?>" class="btn btn-warning btn-sm fw-bold rounded px-2 py-1 w-100 w-sm-auto" style="font-size: 0.75rem;">Đặt vé</a>
+                                                <a href="movie-detail.php?id=<?= $movie['id'] ?>" class="btn btn-warning btn-sm fw-bold rounded px-2 py-1 w-100 w-sm-auto" style="font-size: 0.75rem;">Xem chi tiết</a>
                                             </div>
                                         </div>
                                     </div>
@@ -257,6 +256,7 @@ try {
             });
         });
     </script>
+<?php include_once 'quick_book_modal.php'; ?>
 </body>
 
 </html>
