@@ -214,16 +214,11 @@ try {
                 </div>
                 <div class="col-md-4">
                     <h5 class="text-warning mb-3">Liên hệ</h5>
-                    <p class="mb-1 text-body-secondary">📍 Đầm Dơi, Cà Mau</p>
+                    <p class="mb-1 text-body-secondary">📍 BDU.Cà Mau</p>
                     <p class="mb-1 text-body-secondary">📞 0123 456 789</p>
                     <p class="text-body-secondary">✉️ novacinema@gmail.com</p>
                 </div>
-                <div class="col-md-4">
-                    <h5 class="text-warning mb-3">Kết nối</h5>
-                    <a href="#" class="d-block text-body-secondary text-decoration-none mb-2 footer-link">Facebook</a>
-                    <a href="#" class="d-block text-body-secondary text-decoration-none mb-2 footer-link">Instagram</a>
-                    <a href="#" class="d-block text-body-secondary text-decoration-none footer-link">YouTube</a>
-                </div>
+
             </div>
             <hr class="border-secondary my-4">
             <p class="text-center text-body-secondary mb-0 small">© 2026 Nova Cinema. All Rights Reserved.</p>

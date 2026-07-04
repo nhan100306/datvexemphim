@@ -207,7 +207,7 @@ if ($movie_id > 0) {
                                     Phim khởi chiếu vào <strong><?= date('d/m/Y', strtotime($release_date)) ?></strong>. Chọn suất chiếu sớm nhất để đặt chỗ:
                                 </p>
                             <?php else: ?>
-                                <p class="text-secondary mb-3">Chọn suất chiếu phù hợp với bạn tại <strong>Nova Cinema Đầm Dơi</strong>:</p>
+                                <p class="text-secondary mb-3">Chọn suất chiếu phù hợp với bạn tại <strong>Nova Cinema BDU</strong>:</p>
                             <?php endif; ?>
 
                             <div class="d-flex flex-wrap gap-2">
