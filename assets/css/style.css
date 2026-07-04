@@ -20,13 +20,14 @@ font-family: Arial, Helvetica, sans-serif;
     color: #888;
 }
 
-/* Hiệu ứng Movie Card */
-.movie-card {
+.movie-card-hover {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; /* Biến con trỏ chuột thành hình bàn tay */
 }
-.movie-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 25px rgba(255, 193, 7, 0.25) !important;
+
+.movie-card-hover:hover {
+    transform: translateY(-10px); /* Đẩy thẻ phim nhô lên 10px */
+    box-shadow: 0 15px 25px rgba(255, 193, 7, 0.2) !important; /* Thêm bóng đổ màu vàng nhẹ cho hợp tone Nova Cinema */
 }
 
 /* Hiệu ứng Link Footer */
@@ -88,3 +89,42 @@ font-family: Arial, Helvetica, sans-serif;
         height: 50vh;
     }
 }
+/* Custom giao diện Tab giống Galaxy Cinema */
+    .galaxy-tab-container {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #e0e0e0;
+        margin-bottom: 20px;
+    }
+    
+    .galaxy-title {
+        border-left: 4px solid #034ea2; /* Màu xanh của gạch dọc */
+        padding-left: 10px;
+        color: #333;
+        margin-right: 30px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .galaxy-nav-tabs {
+        border-bottom: none; /* Xóa viền mặc định của Bootstrap */
+    }
+
+    .galaxy-nav-tabs .nav-link {
+        color: #777; /* Màu chữ khi chưa chọn */
+        font-weight: 600;
+        font-size: 1.1rem;
+        border: none;
+        padding: 10px 15px;
+        background: transparent;
+    }
+
+    .galaxy-nav-tabs .nav-link:hover {
+        color: #034ea2;
+    }
+
+    .galaxy-nav-tabs .nav-link.active {
+        color: #034ea2 !important; /* Màu xanh khi được chọn */
+        border-bottom: 3px solid #034ea2 !important; /* Gạch dưới màu xanh */
+        background: transparent !important;
+    }
