@@ -104,5 +104,16 @@ DATVEXEMPHIM/
 ├── quick_book_modal.php
 ├── lich-chieu.php
 ├── booking.php
-└── README.md
+└── README.md 
+```
+## 9. Một số ảnh giao diện
+![Trang chủ](assets/images/trangchu.png)
 
+![phim](assets/images/phim.png)
+
+![Lịch chiếu ](assets/images/lichchieu.png)
+
+![Trang điều khiển admin](assets/images/quanly.png)
+
+## 10. Video demo
+▶️ **[Bấm vào đây để xem Video Demo toàn bộ chức năng hệ thống](https://youtu.be/kTiw5jKtp4U?si=yqWNcn1Tsa9brt32)**
