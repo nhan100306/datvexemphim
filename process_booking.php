@@ -8,6 +8,7 @@ require_once 'db_connect.php';
 
 $success = false;
 $error_msg = '';
+$booking_id = 0;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $showtime_id = isset($_POST['showtime_id']) ? (int)$_POST['showtime_id'] : 0;
