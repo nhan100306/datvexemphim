@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 04, 2026 at 07:42 PM
+-- Generation Time: Jul 05, 2026 at 04:02 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -38,30 +38,14 @@ CREATE TABLE `booked_seats` (
 --
 
 INSERT INTO `booked_seats` (`id`, `booking_id`, `seat_name`) VALUES
-(1, 1, 'A6'),
-(2, 2, 'A7'),
-(3, 2, 'A8'),
-(4, 3, 'A5'),
-(5, 3, 'B5'),
-(6, 3, 'B6'),
-(7, 4, 'A2'),
-(8, 4, 'C2'),
-(9, 4, 'C6'),
-(10, 4, 'D4'),
-(11, 4, 'D5'),
-(12, 5, 'B7'),
-(13, 6, 'A8'),
-(14, 7, 'A6'),
-(15, 8, 'B4'),
-(16, 8, 'B5'),
-(17, 8, 'B6'),
-(18, 9, 'B4'),
-(19, 9, 'B5'),
-(20, 9, 'C4'),
-(21, 10, 'A4'),
-(22, 10, 'A5'),
-(23, 11, 'A4'),
-(24, 12, 'A1');
+(1, 19, 'A1'),
+(38, 20, 'A1'),
+(39, 20, 'A3'),
+(40, 20, 'A4'),
+(41, 20, 'A7'),
+(42, 21, 'A3'),
+(43, 21, 'B4'),
+(44, 21, 'C5');
 
 -- --------------------------------------------------------
 
@@ -83,18 +67,9 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`id`, `showtime_id`, `customer_name`, `customer_phone`, `total_price`, `booking_date`) VALUES
-(1, 2, 'Thành Viên Nova', '0909123456', 95000, '2026-07-04 21:41:43'),
-(2, 3, 'Thành Viên Nova', '0909123456', 190000, '2026-07-04 21:42:06'),
-(3, 2, 'Thành Viên Nova', '0909123456', 285000, '2026-07-04 21:42:20'),
-(4, 3, 'Thành Viên Nova', '0909123456', 475000, '2026-07-04 21:44:19'),
-(5, 2, 'Thành Viên Nova', '0909123456', 95000, '2026-07-04 21:44:29'),
-(6, 6, 'Thành Viên Nova', '0909123456', 95000, '2026-07-04 21:46:25'),
-(7, 10, 'Thành Viên Nova', '0909123456', 85000, '2026-07-04 22:15:18'),
-(8, 10, 'Thành Viên Nova', '0909123456', 255000, '2026-07-04 22:17:26'),
-(9, 15, 'Thành Viên Nova', '0909123456', 285000, '2026-07-04 22:35:05'),
-(10, 6, 'Thành Viên Nova', '0909123456', 190000, '2026-07-04 22:39:46'),
-(11, 23, 'Thành Viên Nova', '0909123456', 95000, '2026-07-04 23:01:11'),
-(12, 7, 'Thành Viên Nova', '0909123456', 95000, '2026-07-04 23:02:17');
+(19, 36, 'Quản Trị Viên Nova', '', 95000, '2026-07-05 18:35:25'),
+(20, 37, 'Nguyễn Thanh Nhàn', '0853430787', 300000, '2026-07-05 21:00:50'),
+(21, 38, 'Nguyễn Thanh Nhàn', '0853430787', 225000, '2026-07-05 21:01:05');
 
 -- --------------------------------------------------------
 
@@ -106,6 +81,7 @@ CREATE TABLE `movies` (
   `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
+  `trailer_url` varchar(255) NOT NULL,
   `image` varchar(255) DEFAULT NULL,
   `release_date` date NOT NULL,
   `duration` int(11) NOT NULL,
@@ -116,19 +92,19 @@ CREATE TABLE `movies` (
 -- Dumping data for table `movies`
 --
 
-INSERT INTO `movies` (`id`, `title`, `description`, `image`, `release_date`, `duration`, `price`) VALUES
-(1, 'Thám tử lừng danh Conan: Thiên Thần Sa Ngã Trên Xa Lộ', 'Conan cùng Ran, Sonoko, đội thám tử nhí và Sera Masumi đến Yokohama tham dự Lễ hội Moto Kanagawa. Một tay lái bí ẩn mang biệt danh \"Quái Xế Đen\" xuất hiện, kéo Conan và nữ cảnh sát Chihaya Hagiwara vào cuộc điều tra đầy kịch tính liên quan đến mẫu mô tô công nghệ cao \"Angel\" và một vụ án nhiều năm trước.', 'conan.jpg', '2026-07-24', 109, 90000),
-(2, 'ĐỀN LA SÁT', 'Nhóm sinh viên quốc tế thực hiện khảo sát tại một ngôi đền bỏ hoang ở Kobe, Nhật Bản. Khi một thành viên đột nhiên phát điên và mất tích bí ẩn, người quản lý dự án Yu-mi phải nhờ đến pháp sư Myung-jin để đối đầu với thế lực tà ác đang ẩn náu trong ngôi đền và khám phá bí mật kinh hoàng phía sau lời nguyền La Sát.', 'denlasat.jpg', '2026-07-03', 96, 95000),
-(3, 'QUỶ BẮT HỒN', 'Một gia đình tưởng chừng có cuộc sống bình yên bỗng bị cuốn vào chuỗi hiện tượng siêu nhiên đáng sợ. Những tiếng gọi bí ẩn giữa đêm, những bóng người xuất hiện rồi biến mất và lời nguyền \"Đúng tháng đúng ngày, hồn về theo quỷ\" khiến họ phải đối mặt với thế lực tà ác để bảo vệ những người mình yêu thương.', 'quybathon.jpg', '2026-07-10', 103, 90000),
-(4, 'NGƯỜI NHỆN: KHỞI ĐẦU MỚI', 'Sau khi cả thế giới quên mất danh tính của Peter Parker, anh quyết định sống như một Người Nhện thực thụ, đơn độc bảo vệ thành phố New York. Khi một mối đe dọa bí ẩn mới xuất hiện và sức mạnh của bản thân có dấu hiệu thay đổi, Peter phải đối mặt với thử thách lớn nhất từ trước đến nay để bảo vệ những người mình yêu quý.', 'spider.jpg', '2026-07-31', 145, 95000),
-(5, 'ĐỒNG DAO MA QUÁI\r\n', 'Một nhóm học sinh cá biệt được đưa đến ngôi chùa bỏ hoang để rèn luyện kỷ luật. Tại đây, họ vô tình tìm thấy một bàn cờ cổ bị phong ấn. Mỗi lần gieo xúc xắc, một thế lực ma quỷ trong truyền thuyết Thái Lan được giải phóng, kéo cả nhóm vào trò chơi sinh tử nơi chỉ có cách phá bỏ lời nguyền mới có thể sống sót.', 'dongdao.jpg', '2026-07-03', 123, 95000),
-(6, 'THỎ ƠI!!', 'Lấy cảm hứng từ những câu chuyện có thật, Thỏ Ơi!! kể về những góc khuất của tình yêu và hôn nhân, nơi những bí mật dần được hé lộ và những \"chiếc mặt nạ\" của con người lần lượt bị gỡ bỏ. Bộ phim pha trộn giữa tâm lý, hài hước và cảm xúc, mang đến nhiều bất ngờ cho khán giả.', 'thooi.jpg', '2026-02-17', 127, 95000),
-(7, 'BÓNG QUỶ', 'Trong một cộng đồng Cơ Đốc giáo bảo thủ tại một thị trấn hẻo lánh ở Úc, hai thiếu niên Naim và Ryan bị ép tham gia liệu pháp \"chuyển đổi\". Một thế lực tà ác được đánh thức, có khả năng hóa thân thành người mà nạn nhân yêu thương hoặc tin tưởng nhất, đẩy họ vào cuộc chiến sinh tồn giữa đức tin, nỗi sợ và sự thật.', 'bongquy.jpg', '2026-07-03', 88, 85000),
-(8, 'MINIONS & QUÁI VẬT', 'Các Minions mang tham vọng chinh phục Hollywood bằng cách tự thực hiện một bộ phim quái vật. Tuy nhiên, kế hoạch nhanh chóng trở thành thảm họa khi chúng vô tình giải phóng những quái vật kỳ dị ra khắp thế giới. Với sự hài hước quen thuộc, nhóm Minions phải hợp sức để cứu lấy hành tinh khỏi chính mớ hỗn loạn mà mình gây ra.', 'minions.jpg', '2026-07-01', 90, 95000),
-(9, 'NGÀY CON SỐNG LẠI', 'Sau một tai nạn bí ẩn, một người mẹ bất ngờ nhận được cơ hội gặp lại đứa con đã qua đời thông qua một hiện tượng khoa học chưa từng có. Khi ranh giới giữa ký ức, thực tại và tương lai dần bị xóa nhòa, cô phải đưa ra lựa chọn đau đớn giữa việc níu giữ quá khứ hay chấp nhận sự thật để tiếp tục sống.', 'ngaycon.jpg', '2026-07-03', 126, 95000),
-(10, 'MẸ ƠI VỀ NHÀ', 'Bộ phim kể về hành trình đoàn tụ của một gia đình sau nhiều năm xa cách, mang đến những khoảnh khắc cảm động về tình mẫu tử và giá trị của mái ấm.', 'meoi.jpg', '2026-07-10', 115, 100000),
-(11, 'MƯA ĐỎ', 'Bộ phim lịch sử - chiến tranh lấy cảm hứng từ sự kiện 81 ngày đêm chiến đấu bảo vệ Thành cổ Quảng Trị năm 1972. Phim khắc họa lòng dũng cảm, sự hy sinh của những người lính trẻ và khát vọng hòa bình của dân tộc.', 'muado.jpg', '2025-08-22', 124, 99000),
-(12, 'NHÀ MÌNH ĐI THÔI', 'Bộ phim gia đình - hài kể về Phương, một nữ startup trẻ buộc phải tổ chức chuyến du lịch giả tạo cho gia đình bất ổn của mình để giành khoản đầu tư. Trên hành trình ấy, những mâu thuẫn dần được hóa giải và các thành viên tìm lại sự gắn kết.', 'nhaminh.jpg', '2026-02-26', 115, 80000);
+INSERT INTO `movies` (`id`, `title`, `description`, `trailer_url`, `image`, `release_date`, `duration`, `price`) VALUES
+(1, 'Thám tử lừng danh Conan: Thiên Thần Sa Ngã Trên Xa Lộ', 'Conan cùng Ran, Sonoko, đội thám tử nhí và Sera Masumi đến Yokohama tham dự Lễ hội Moto Kanagawa. Một tay lái bí ẩn mang biệt danh \"Quái Xế Đen\" xuất hiện, kéo Conan và nữ cảnh sát Chihaya Hagiwara vào cuộc điều tra đầy kịch tính liên quan đến mẫu mô tô công nghệ cao \"Angel\" và một vụ án nhiều năm trước.', 'https://youtu.be/SWFZAxzANa0?si=3d4waO5loOaX9uZW', 'conan.jpg', '2026-07-24', 109, 90000),
+(2, 'ĐỀN LA SÁT', 'Nhóm sinh viên quốc tế thực hiện khảo sát tại một ngôi đền bỏ hoang ở Kobe, Nhật Bản. Khi một thành viên đột nhiên phát điên và mất tích bí ẩn, người quản lý dự án Yu-mi phải nhờ đến pháp sư Myung-jin để đối đầu với thế lực tà ác đang ẩn náu trong ngôi đền và khám phá bí mật kinh hoàng phía sau lời nguyền La Sát.', 'https://youtu.be/kHJ9xIKrNOE?si=E5uTcJi18LmkJelS', 'denlasat.jpg', '2026-07-03', 96, 75000),
+(3, 'QUỶ BẮT HỒN', 'Một gia đình tưởng chừng có cuộc sống bình yên bỗng bị cuốn vào chuỗi hiện tượng siêu nhiên đáng sợ. Những tiếng gọi bí ẩn giữa đêm, những bóng người xuất hiện rồi biến mất và lời nguyền \"Đúng tháng đúng ngày, hồn về theo quỷ\" khiến họ phải đối mặt với thế lực tà ác để bảo vệ những người mình yêu thương.', 'https://youtu.be/yDqwdppqq3A?si=u5WIrG2aW6JwrnH3', 'quybathon.jpg', '2026-07-10', 103, 90000),
+(4, 'NGƯỜI NHỆN: KHỞI ĐẦU MỚI', 'Sau khi cả thế giới quên mất danh tính của Peter Parker, anh quyết định sống như một Người Nhện thực thụ, đơn độc bảo vệ thành phố New York. Khi một mối đe dọa bí ẩn mới xuất hiện và sức mạnh của bản thân có dấu hiệu thay đổi, Peter phải đối mặt với thử thách lớn nhất từ trước đến nay để bảo vệ những người mình yêu quý.', 'https://youtu.be/RKev8MVJViU?si=rUThPNJADsk6283u', 'spider.jpg', '2026-07-31', 145, 95000),
+(5, 'ĐỒNG DAO MA QUÁI\r\n', 'Một nhóm học sinh cá biệt được đưa đến ngôi chùa bỏ hoang để rèn luyện kỷ luật. Tại đây, họ vô tình tìm thấy một bàn cờ cổ bị phong ấn. Mỗi lần gieo xúc xắc, một thế lực ma quỷ trong truyền thuyết Thái Lan được giải phóng, kéo cả nhóm vào trò chơi sinh tử nơi chỉ có cách phá bỏ lời nguyền mới có thể sống sót.', 'https://youtu.be/gKZDOgqwhig?si=KcN-rmO7JANYREh8', 'dongdao.jpg', '2026-07-03', 123, 95000),
+(6, 'THỎ ƠI!!', 'Lấy cảm hứng từ những câu chuyện có thật, Thỏ Ơi!! kể về những góc khuất của tình yêu và hôn nhân, nơi những bí mật dần được hé lộ và những \"chiếc mặt nạ\" của con người lần lượt bị gỡ bỏ. Bộ phim pha trộn giữa tâm lý, hài hước và cảm xúc, mang đến nhiều bất ngờ cho khán giả.', 'https://youtu.be/aJOXdRSj91g?si=l_BN4L0bTjdZNFrY', 'thooi.jpg', '2026-02-17', 127, 95000),
+(7, 'BÓNG QUỶ', 'Trong một cộng đồng Cơ Đốc giáo bảo thủ tại một thị trấn hẻo lánh ở Úc, hai thiếu niên Naim và Ryan bị ép tham gia liệu pháp \"chuyển đổi\". Một thế lực tà ác được đánh thức, có khả năng hóa thân thành người mà nạn nhân yêu thương hoặc tin tưởng nhất, đẩy họ vào cuộc chiến sinh tồn giữa đức tin, nỗi sợ và sự thật.', 'https://youtu.be/YoXIfWUd4N4?si=hT1GJ0qt7ZuTLymD', 'bongquy.jpg', '2026-07-03', 88, 85000),
+(8, 'MINIONS & QUÁI VẬT', 'Các Minions mang tham vọng chinh phục Hollywood bằng cách tự thực hiện một bộ phim quái vật. Tuy nhiên, kế hoạch nhanh chóng trở thành thảm họa khi chúng vô tình giải phóng những quái vật kỳ dị ra khắp thế giới. Với sự hài hước quen thuộc, nhóm Minions phải hợp sức để cứu lấy hành tinh khỏi chính mớ hỗn loạn mà mình gây ra.', 'https://youtu.be/VBPRZqeR95M?si=DnwvoXp4PV9IgS3R', 'minions.jpg', '2026-07-01', 90, 95000),
+(9, 'NGÀY CON SỐNG LẠI', 'Sau một tai nạn bí ẩn, một người mẹ bất ngờ nhận được cơ hội gặp lại đứa con đã qua đời thông qua một hiện tượng khoa học chưa từng có. Khi ranh giới giữa ký ức, thực tại và tương lai dần bị xóa nhòa, cô phải đưa ra lựa chọn đau đớn giữa việc níu giữ quá khứ hay chấp nhận sự thật để tiếp tục sống.', 'https://youtu.be/1XRQ3bdGZug?si=EYj1Tmqb-0nyFdr5', 'ngaycon.jpg', '2026-07-03', 126, 95000),
+(10, 'MẸ ƠI VỀ NHÀ', 'Bộ phim kể về hành trình đoàn tụ của một gia đình sau nhiều năm xa cách, mang đến những khoảnh khắc cảm động về tình mẫu tử và giá trị của mái ấm.', 'https://youtu.be/Y8B9MJZZDR4?si=NvCdU35KaKFUOdds', 'meoi.jpg', '2026-07-10', 115, 100000),
+(11, 'MƯA ĐỎ', 'Bộ phim lịch sử - chiến tranh lấy cảm hứng từ sự kiện 81 ngày đêm chiến đấu bảo vệ Thành cổ Quảng Trị năm 1972. Phim khắc họa lòng dũng cảm, sự hy sinh của những người lính trẻ và khát vọng hòa bình của dân tộc.', 'https://youtu.be/BD6PoZJdt_M?si=pWWdFHEwHkspho97', 'muado.jpg', '2025-08-22', 124, 99000),
+(12, 'NHÀ MÌNH ĐI THÔI', 'Bộ phim gia đình - hài kể về Phương, một nữ startup trẻ buộc phải tổ chức chuyến du lịch giả tạo cho gia đình bất ổn của mình để giành khoản đầu tư. Trên hành trình ấy, những mâu thuẫn dần được hóa giải và các thành viên tìm lại sự gắn kết.', 'https://youtu.be/W07fNyJ40BE?si=fjkfj-O2huJGKJqI', 'nhaminh.jpg', '2026-02-26', 115, 90000);
 
 -- --------------------------------------------------------
 
@@ -177,7 +153,16 @@ INSERT INTO `showtimes` (`id`, `movie_id`, `show_date`, `show_time`, `format`, `
 (25, 10, '2026-07-10', '17:30:00', '2D Sub', 0),
 (26, 10, '2026-07-10', '19:45:00', '2D Sub', 1),
 (29, 11, '2026-07-04', '18:40:00', '2D Sub', 0),
-(30, 11, '2026-07-04', '17:00:00', '2D Sub', 1);
+(30, 11, '2026-07-04', '17:00:00', '2D Sub', 1),
+(32, 12, '2026-07-05', '20:00:00', '2D Sub', 0),
+(33, 12, '2026-07-05', '21:00:00', '2D Sub', 0),
+(34, 11, '2026-07-05', '08:30:00', '3D IMAX', 1),
+(35, 6, '2026-07-05', '11:30:00', '2D Sub', 0),
+(36, 6, '2026-07-05', '15:00:00', '2D Sub', 1),
+(37, 2, '2026-07-05', '10:00:00', '3D Sub', 0),
+(38, 2, '2026-07-05', '14:00:00', '3D Sub', 1),
+(39, 5, '2026-07-05', '10:30:00', '2D Sub', 0),
+(40, 5, '2026-07-05', '13:30:00', '2D Lồng Tiếng', 1);
 
 -- --------------------------------------------------------
 
@@ -191,9 +176,18 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `fullname` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
+  `phone` varchar(15) NOT NULL,
   `role` tinyint(4) DEFAULT 0,
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `phone`, `role`, `created_at`) VALUES
+(1, 'admin', 'admin123', 'Quản Trị Viên Nova', 'admin@novacinema.com', '0853430787', 1, '2026-07-05 10:58:57'),
+(7, 'thanhnhan', '$2y$10$XZ67e3gP1n0Db.hpfxahWenwzilRUvdIne1isvzq07pfpa6CwIMuK', 'Nguyễn Thanh Nhàn', 'nguyenthanhnhan@gmail.com', '0853430787', 0, '2026-07-05 20:59:34');
 
 --
 -- Indexes for dumped tables
@@ -242,31 +236,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `booked_seats`
 --
 ALTER TABLE `booked_seats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `movies`
 --
 ALTER TABLE `movies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `showtimes`
 --
 ALTER TABLE `showtimes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
