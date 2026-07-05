@@ -25,6 +25,21 @@ if ($movie_id > 0) {
         $stmt = $conn->prepare("SELECT * FROM movies WHERE id = :id");
         $stmt->execute(['id' => $movie_id]);
         $movie = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Xử lý link YouTube để chạy được trong khung iframe
+        $embed_url = "";
+        if (!empty($movie['trailer_url'])) {
+            $trailer_url = $movie['trailer_url'];
+            // Đổi link dạng watch?v= thành dạng embed/
+            if (strpos($trailer_url, 'watch?v=') !== false) {
+                $embed_url = str_replace('watch?v=', 'embed/', $trailer_url);
+                // Cắt bỏ các tham số dư thừa phía sau (như &list=...)
+                $embed_url = explode('&', $embed_url)[0];
+            } elseif (strpos($trailer_url, 'youtu.be/') !== false) {
+                $embed_url = str_replace('youtu.be/', 'www.youtube.com/embed/', $trailer_url);
+            } else {
+                $embed_url = $trailer_url;
+            }
+        }
     } catch (PDOException $e) {
         error_log("DB Error: " . $e->getMessage());
     }
@@ -96,7 +111,37 @@ if ($movie_id > 0) {
                     <input class="form-control me-2 rounded-pill bg-dark text-white border-secondary" type="search" name="search" placeholder="Tìm phim...">
                     <button class="btn btn-outline-warning rounded-pill px-3" type="submit">Tìm</button>
                 </form>
-                <a href="admin/login.php" class="btn btn-warning fw-bold rounded-pill px-4">Đăng nhập</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-warning dropdown-toggle fw-bold rounded-pill px-4" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i> <?= htmlspecialchars($_SESSION['fullname']) ?>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow border-secondary mt-2 rounded-3">
+
+                            <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 1): ?>
+                                <li>
+                                    <a class="dropdown-item fw-bold text-warning py-2" href="admin/dashboard.php">
+                                        <i class="bi bi-speedometer2 me-2"></i>Trang quản trị
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider border-secondary">
+                                </li>
+                            <?php endif; ?>
+
+                            <li>
+                                <a class="dropdown-item text-danger py-2" href="logout.php">
+                                    <i class="bi bi-box-arrow-left me-2"></i>Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                <?php else: ?>
+                    <div class="d-flex align-items-center">
+                        <a href="login.php" class="btn btn-warning rounded-pill px-4 fw-bold me-2">Đăng nhập</a>
+                        <a href="register.php" class="btn btn-outline-warning rounded-pill px-4 fw-bold">Đăng ký</a>
+                    </div>
+                <?php endif; ?>
                 <button id="themeToggle" class="btn btn-outline-secondary rounded-circle ms-lg-3" style="width: 40px; height: 40px;" title="Chuyển giao diện">🌙</button>
             </div>
         </div>
@@ -170,10 +215,16 @@ if ($movie_id > 0) {
                                 <button class="btn btn-warning fw-bold px-4 py-2 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#quickBookModal" onclick="preselectMovie(<?= $movie['id'] ?>)">
                                     🎟️ĐẶT VÉ NGAY
                                 </button>
+                                <?php if (!empty($embed_url)): ?>
+                                    <button type="button" class="btn btn-outline-light rounded-pill px-4 fw-bold py-2" data-bs-toggle="modal" data-bs-target="#trailerModal">
+                                        <i class="bi bi-play-circle-fill me-2 text-warning"></i>Xem Trailer
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
-
                     </div>
+
+                </div>
                 </div>
             </section>
 
@@ -293,6 +344,22 @@ if ($movie_id > 0) {
                 });
             });
         </script>
+        <div class="modal fade" id="trailerModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content bg-transparent border-0">
+                    <div class="modal-header border-0 justify-content-end pb-0">
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        <div class="ratio ratio-16x9 bg-dark rounded overflow-hidden shadow-lg border border-secondary">
+                            <iframe src="<?= htmlspecialchars($embed_url) ?>" title="Trailer" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

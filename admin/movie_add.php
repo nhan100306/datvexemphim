@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $release_date = $_POST['release_date'];
     $description = trim($_POST['description']);
     $image_name = 'default_movie.jpg'; // Tên ảnh mặc định nếu không up
+    $trailer_url = trim($_POST['trailer_url']);
 
     // Logic xử lý Upload File Ảnh
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
@@ -26,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Đổi tên ảnh bằng hàm time() để tránh trùng lặp file cũ
         $image_name = time() . '_' . basename($_FILES["image"]["name"]);
         $target_file = $target_dir . $image_name;
-        
+
         // Di chuyển file từ bộ nhớ tạm vào thư mục images
         move_uploaded_file($_FILES["image"]["tmp_name"], $target_file);
     }
@@ -34,8 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Thêm dữ liệu vào Database
     if (!empty($title)) {
         try {
-            $sql = "INSERT INTO movies (title, description, release_date, duration, price, image) 
-                    VALUES (:title, :description, :release_date, :duration, :price, :image)";
+            $sql = "INSERT INTO movies (title, description, release_date, duration, price, image, trailer_url) 
+                    VALUES (:title, :description, :release_date, :duration, :price, :image, :trailer_url)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 'title' => $title,
@@ -43,7 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'release_date' => $release_date,
                 'duration' => $duration,
                 'price' => $price,
-                'image' => $image_name
+                'image' => $image_name,
+                'trailer_url' => $trailer_url
             ]);
             $msg = "<div class='alert alert-success'><i class='bi bi-check-circle me-2'></i> Thêm phim mới thành công!</div>";
         } catch (PDOException $e) {
@@ -56,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,14 +66,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f6f9; overflow-x: hidden; }
-        .sidebar { min-height: 100vh; background-color: #212529; color: #fff; width: 250px; position: fixed; left: 0; top: 0; z-index: 100; }
-        .sidebar a { color: #adb5bd; text-decoration: none; padding: 12px 20px; display: block; border-radius: 5px; margin: 0 10px 5px 10px; transition: 0.2s; font-weight: 500; }
-        .sidebar a:hover, .sidebar a.active { color: #000; background-color: #ffc107; }
-        .sidebar .nav-icon { margin-right: 12px; font-size: 1.1rem; }
-        .content-wrapper { padding: 20px; margin-left: 250px; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f9;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background-color: #212529;
+            color: #fff;
+            width: 250px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        }
+
+        .sidebar a {
+            color: #adb5bd;
+            text-decoration: none;
+            padding: 12px 20px;
+            display: block;
+            border-radius: 5px;
+            margin: 0 10px 5px 10px;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: #000;
+            background-color: #ffc107;
+        }
+
+        .sidebar .nav-icon {
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        .content-wrapper {
+            padding: 20px;
+            margin-left: 250px;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="sidebar py-3 shadow-lg">
@@ -95,9 +136,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="card shadow-sm border-0 rounded-3 max-w-700 mx-auto" style="max-width: 800px;">
             <div class="card-body p-4 p-md-5">
                 <?= $msg ?>
-                
+
                 <form action="movie_add.php" method="POST" enctype="multipart/form-data">
-                    
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Tên phim <span class="text-danger">*</span></label>
                         <input type="text" name="title" class="form-control" required placeholder="Nhập tên bộ phim...">
@@ -129,7 +170,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <input type="file" name="image" class="form-control" accept="image/*">
                         <div class="form-text">Khuyên dùng ảnh tỷ lệ dọc (Ví dụ: 800x1200px).</div>
                     </div>
-
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Link Trailer (YouTube)</label>
+                        <input type="url" name="trailer_url" class="form-control" placeholder="Ví dụ: https://www.youtube.com/watch?v=ABCXYZ...">
+                        <small class="text-muted">Chỉ cần dán link YouTube bình thường của phim vào đây.</small>
+                    </div>
                     <hr class="mb-4">
                     <div class="d-grid">
                         <button type="submit" class="btn btn-warning fw-bold py-2 fs-5"><i class="bi bi-floppy me-2"></i>LƯU PHIM MỚI</button>
@@ -141,4 +186,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
 </body>
+
 </html>
