@@ -1,4 +1,15 @@
 <?php
+// Chốt chặn kiểm tra đăng nhập
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Nếu mảng $_SESSION không chứa thông tin 'user_id', tức là chưa đăng nhập
+if (!isset($_SESSION['user_id'])) {
+    // Chuyển hướng người dùng về trang đăng nhập kèm theo một thông báo trên URL
+    header("Location: login.php?msg=require_login");
+    exit;
+}
 // Nhúng file kết nối CSDL
 require_once 'db_connect.php';
 

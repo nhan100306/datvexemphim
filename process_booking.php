@@ -1,4 +1,9 @@
 <?php
+// BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ LẤY TÊN TỪ SESSION
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once 'db_connect.php';
 
 $success = false;
@@ -8,21 +13,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $showtime_id = isset($_POST['showtime_id']) ? (int)$_POST['showtime_id'] : 0;
     $selected_seats = isset($_POST['selected_seats']) ? $_POST['selected_seats'] : '';
     $total_price = isset($_POST['total_price']) ? (int)$_POST['total_price'] : 0;
+    
+    // Lấy số điện thoại (nếu có form truyền sang, không có thì để N/A)
+    $customer_phone = isset($_POST['customer_phone']) ? trim($_POST['customer_phone']) : 'N/A';
 
-    // Tạm thời fix cứng thông tin khách hàng (Sau này làm chức năng Login sẽ lấy từ Session)
-    $customer_name = "Thành Viên Nova";
-    $customer_phone = "0909123456";
+    // Tự động lấy tên khách hàng từ Session
+    $customer_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Khách vãng lai';
 
     if ($showtime_id > 0 && !empty($selected_seats)) {
         try {
-            // Bắt đầu quá trình lưu (Transaction - Giúp an toàn dữ liệu, lỗi là hoàn tác)
+            // Bắt đầu quá trình lưu (Transaction)
             $conn->beginTransaction();
 
             // 1. Lưu Hóa đơn vào bảng bookings
             $sql_booking = "INSERT INTO bookings (showtime_id, customer_name, customer_phone, total_price) VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($sql_booking);
             $stmt->execute([$showtime_id, $customer_name, $customer_phone, $total_price]);
-            
+
             // Lấy ID của hóa đơn vừa tạo
             $booking_id = $conn->lastInsertId();
 
@@ -30,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $seats_array = explode(',', $selected_seats);
             $sql_seat = "INSERT INTO booked_seats (booking_id, seat_name) VALUES (?, ?)";
             $stmt_seat = $conn->prepare($sql_seat);
-            
+
             foreach ($seats_array as $seat) {
                 $stmt_seat->execute([$booking_id, trim($seat)]);
             }
@@ -38,7 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Hoàn tất lưu dữ liệu
             $conn->commit();
             $success = true;
-
         } catch (Exception $e) {
             $conn->rollBack();
             $error_msg = "Có lỗi xảy ra trong quá trình đặt vé: " . $e->getMessage();
@@ -64,23 +70,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .ticket-box {
             background: linear-gradient(135deg, #222, #000);
             border-radius: 15px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
             border: 2px dashed #ffc107;
         }
-        .ticket-circle-left, .ticket-circle-right {
+        .ticket-circle-left,
+        .ticket-circle-right {
             position: absolute;
             top: 50%;
             width: 40px;
             height: 40px;
-            background-color: #f8f9fa; /* Màu nền của body */
+            background-color: #f8f9fa;
             border-radius: 50%;
             transform: translateY(-50%);
         }
-        .ticket-circle-left { left: -20px; }
-        .ticket-circle-right { right: -20px; }
-        [data-bs-theme="dark"] .ticket-circle-left, [data-bs-theme="dark"] .ticket-circle-right {
+        .ticket-circle-left {
+            left: -20px;
+        }
+        .ticket-circle-right {
+            right: -20px;
+        }
+        [data-bs-theme="dark"] .ticket-circle-left,
+        [data-bs-theme="dark"] .ticket-circle-right {
             background-color: #212529;
         }
     </style>
@@ -90,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-                
+
                 <?php if ($success): ?>
                     <div class="text-center mb-4">
                         <h2 class="text-success fw-bold">🎉 ĐẶT VÉ THÀNH CÔNG!</h2>
@@ -100,19 +112,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="ticket-box text-white p-4 p-md-5 mb-4">
                         <div class="ticket-circle-left"></div>
                         <div class="ticket-circle-right"></div>
-                        
+
                         <div class="text-center border-bottom border-secondary pb-3 mb-3">
                             <h4 class="text-warning fw-bold mb-0">VÉ XEM PHIM</h4>
                             <small class="text-white-50">Mã hóa đơn: #NV-<?= str_pad($booking_id, 5, '0', STR_PAD_LEFT) ?></small>
                         </div>
-                        
+
                         <div class="row g-3 fs-5">
                             <div class="col-6 text-white-50">Khách hàng:</div>
-                            <div class="col-6 fw-bold text-end"><?= $customer_name ?></div>
-                            
+                            <div class="col-6 fw-bold text-end"><?= htmlspecialchars($customer_name) ?></div>
+
                             <div class="col-6 text-white-50">Ghế đã chọn:</div>
                             <div class="col-6 fw-bold text-end text-warning"><?= htmlspecialchars($selected_seats) ?></div>
-                            
+
                             <div class="col-6 text-white-50">Tổng tiền:</div>
                             <div class="col-6 fw-bold text-end text-danger fs-4"><?= number_format($total_price, 0, ',', '.') ?>đ</div>
                         </div>

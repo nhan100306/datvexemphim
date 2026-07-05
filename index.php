@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 // Nhúng file kết nối CSDL
 require_once 'db_connect.php';
 
@@ -106,8 +109,37 @@ try {
                         <button class="btn btn-outline-warning rounded-pill px-3" type="submit">Tìm</button>
                     </form>
 
-                    <a href="admin/login.php" class="btn btn-warning fw-bold rounded-pill px-4">Đăng nhập</a>
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-warning dropdown-toggle fw-bold rounded-pill px-4" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-1"></i> <?= htmlspecialchars($_SESSION['fullname']) ?>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow border-secondary mt-2 rounded-3">
 
+                                <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 1): ?>
+                                    <li>
+                                        <a class="dropdown-item fw-bold text-warning py-2" href="admin/dashboard.php">
+                                            <i class="bi bi-speedometer2 me-2"></i>Trang quản trị
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider border-secondary">
+                                    </li>
+                                <?php endif; ?>
+
+                                <li>
+                                    <a class="dropdown-item text-danger py-2" href="logout.php">
+                                        <i class="bi bi-box-arrow-left me-2"></i>Đăng xuất
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    <?php else: ?>
+                        <div class="d-flex align-items-center">
+                            <a href="login.php" class="btn btn-warning rounded-pill px-4 fw-bold me-2">Đăng nhập</a>
+                            <a href="register.php" class="btn btn-outline-warning rounded-pill px-4 fw-bold">Đăng ký</a>
+                        </div>
+                    <?php endif; ?>
                     <button id="themeToggle" class="btn btn-outline-secondary rounded-circle ms-lg-3" style="width: 40px; height: 40px;" title="Chuyển giao diện">🌙</button>
             </div>
         </div>
@@ -312,23 +344,26 @@ try {
             });
         });
     </script>
-HTML
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        // NÂNG CẤP: Bổ sung thêm điều kiện urlParams.has('page')
-        if (urlParams.has('search') || urlParams.has('keyword') || urlParams.has('page')) {
-            const phimSection = document.getElementById('danh-sach-phim');
-            if (phimSection) {
-                // Trượt êm ái xuống khu vực phim
-                setTimeout(() => {
-                    phimSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 300);
+    HTML
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // NÂNG CẤP: Bổ sung thêm điều kiện urlParams.has('page')
+            if (urlParams.has('search') || urlParams.has('keyword') || urlParams.has('page')) {
+                const phimSection = document.getElementById('danh-sach-phim');
+                if (phimSection) {
+                    // Trượt êm ái xuống khu vực phim
+                    setTimeout(() => {
+                        phimSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }, 300);
+                }
             }
-        }
-    });
-</script>
+        });
+    </script>
     <?php include_once 'quick_book_modal.php'; ?>
 </body>
 
