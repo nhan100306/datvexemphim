@@ -7,22 +7,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username']);
     $fullname = trim($_POST['fullname']);
     $email = trim($_POST['email']);
+    $phone = trim($_POST['phone']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
     // 1. Kiểm tra nhập đủ dữ liệu
     if (empty($username) || empty($fullname) || empty($email) || empty($password)) {
         $msg = "<div class='alert alert-danger text-center'>Vui lòng nhập đầy đủ thông tin!</div>";
-    } 
+    }
     // 2. Kiểm tra mật khẩu khớp nhau
     elseif ($password !== $confirm_password) {
         $msg = "<div class='alert alert-danger text-center'>Mật khẩu nhập lại không khớp!</div>";
-    } 
-    else {
+    } else {
         // 3. Kiểm tra xem Username hoặc Email đã có ai dùng chưa
         $stmt_check = $conn->prepare("SELECT id FROM users WHERE username = :username OR email = :email");
         $stmt_check->execute(['username' => $username, 'email' => $email]);
-        
+
         if ($stmt_check->rowCount() > 0) {
             $msg = "<div class='alert alert-danger text-center'>Tên đăng nhập hoặc Email đã tồn tại!</div>";
         } else {
@@ -31,24 +31,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $role = 0; // Mặc định role = 0 (Thành viên thường)
 
             try {
-                $sql = "INSERT INTO users (username, password, fullname, email, role) VALUES (:username, :password, :fullname, :email, :role)";
+                $sql = "INSERT INTO users (username, password, fullname, email, phone, role) 
+            VALUES (:username, :password, :fullname, :email, :phone, :role)";
+
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([
                     'username' => $username,
                     'password' => $hashed_password,
                     'fullname' => $fullname,
-                    'email' => $email,
-                    'role' => $role
+                    'email'    => $email,
+                    'phone'    => $phone, 
+                    'role'     => 0
                 ]);
-                
-                // Đăng ký thành công thì bật thông báo và đá về trang Đăng nhập
-                echo "<script>
-                        alert('Đăng ký tài khoản thành công! Mời bạn đăng nhập.');
-                        window.location.href = 'login.php';
-                      </script>";
+
+                echo "<script>alert('Đăng ký thành công!'); window.location.href = 'login.php';</script>";
                 exit;
             } catch (PDOException $e) {
-                $msg = "<div class='alert alert-danger'>Lỗi hệ thống: " . $e->getMessage() . "</div>";
+                $msg = "<div class='alert alert-danger text-center'>Lỗi SQL: " . $e->getMessage() . "</div>";
             }
         }
     }
@@ -56,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Đăng ký tài khoản - Nova Cinema</title>
@@ -63,26 +63,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <style>
         /* Tùy chỉnh CSS giao diện giống hệt form login của bạn */
         body {
-            background-color: #f8f1f1; /* Màu nền đen hoặc thay bằng ảnh nền giống login.php */
+            background-color: #f8f1f1;
+            /* Màu nền đen hoặc thay bằng ảnh nền giống login.php */
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
         }
+
         .register-box {
             background-color: #242428;
             border-radius: 10px;
             padding: 40px;
             width: 100%;
             max-width: 500px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
+
         .form-control {
             background-color: #ececf4;
             border: 1px solid #555;
             color: #fff;
         }
+
         .form-control:focus {
             background-color: #444;
             color: #fff;
@@ -91,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     </style>
 </head>
+
 <body>
 
     <div class="register-box">
@@ -111,6 +116,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input type="email" name="email" class="form-control py-2" placeholder="Nhập email..." required>
             </div>
             <div class="mb-3">
+                <label class="form-label text-light" style="font-size: 14px;">Số điện thoại</label>
+                <input type="text" name="phone" class="form-control py-2" placeholder="Nhập số điện thoại..." required>
+            </div>
+            <div class="mb-3">
                 <label class="form-label text-light" style="font-size: 14px;">Tên đăng nhập</label>
                 <input type="text" name="username" class="form-control py-2" placeholder="Nhập tên tài khoản..." required>
             </div>
@@ -122,9 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label class="form-label text-light" style="font-size: 14px;">Xác nhận mật khẩu</label>
                 <input type="password" name="confirm_password" class="form-control py-2" placeholder="Nhập lại mật khẩu..." required>
             </div>
-            
+
             <button type="submit" class="btn btn-warning w-100 fw-bold py-2 fs-5 text-dark rounded-3">ĐĂNG KÝ</button>
-            
+
             <div class="mt-4 text-center">
                 <span class="text-light" style="opacity: 0.7;">Đã có tài khoản?</span>
                 <a href="login.php" class="text-warning text-decoration-none fw-bold ms-1">Đăng nhập</a>
@@ -136,4 +145,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
 </body>
+
 </html>

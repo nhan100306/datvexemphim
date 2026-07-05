@@ -8,6 +8,7 @@ require_once 'db_connect.php';
 
 $success = false;
 $error_msg = '';
+$booking_id = 0;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $showtime_id = isset($_POST['showtime_id']) ? (int)$_POST['showtime_id'] : 0;
@@ -15,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $total_price = isset($_POST['total_price']) ? (int)$_POST['total_price'] : 0;
     
     // Lấy số điện thoại (nếu có form truyền sang, không có thì để N/A)
-    $customer_phone = isset($_POST['customer_phone']) ? trim($_POST['customer_phone']) : 'N/A';
+   $customer_phone = isset($_SESSION['phone']) ? $_SESSION['phone'] : 'Chưa cập nhật';
 
     // Tự động lấy tên khách hàng từ Session
     $customer_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Khách vãng lai';

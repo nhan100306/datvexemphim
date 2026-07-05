@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['fullname'] = $user['fullname'];
+                    $_SESSION['phone'] = $user['phone'];
                     $_SESSION['user_role'] = $user['role'];
 
                     // PHÂN LUỒNG TỰ ĐỘNG BẰNG ROLE
