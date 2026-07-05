@@ -78,9 +78,9 @@ $admin_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Admin';
         <nav class="mt-3">
             <a href="dashboard.php" class="active"><i class="bi bi-speedometer2 nav-icon"></i> Tổng quan</a>
            <a href="movies.php"><i class="bi bi-film nav-icon"></i> Quản lý Phim</a>
-            <a href="#"><i class="bi bi-calendar-event nav-icon"></i> Lịch chiếu</a>
-            <a href="#"><i class="bi bi-ticket-perforated nav-icon"></i> Hóa đơn & Vé</a>
-            <a href="#"><i class="bi bi-people nav-icon"></i> Thành viên</a>
+            <a href="showtimes.php"><i class="bi bi-calendar-event nav-icon"></i> Lịch chiếu</a>
+            <a href="bookings.php"><i class="bi bi-ticket-perforated nav-icon"></i> Hóa đơn & Vé</a>
+            <a href="members.php"><i class="bi bi-people nav-icon"></i> Thành viên</a>
             <hr class="text-secondary mx-3 mt-4">
             <a href="../logout.php" class="text-danger mt-2"><i class="bi bi-box-arrow-left nav-icon"></i> Đăng xuất</a>
         </nav>
