@@ -24,12 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($movie_id > 0 && !empty($show_date) && !empty($show_time)) {
         try {
-            $sql = "INSERT INTO showtimes (movie_id, show_date, show_time) VALUES (:movie_id, :show_date, :show_time)";
+            $sql = "INSERT INTO showtimes (movie_id, show_date, show_time, format, is_hot) VALUES (:movie_id, :show_date, :show_time, :format, :is_hot)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
                 'movie_id' => $movie_id,
                 'show_date' => $show_date,
-                'show_time' => $show_time
+                'show_time' => $show_time,
+                'format'    => $_POST['format'],
+                'is_hot'    => $_POST['is_hot']
             ]);
             $msg = "<div class='alert alert-success'>Thêm suất chiếu thành công!</div>";
         } catch (PDOException $e) {
@@ -42,12 +44,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <title>Thêm Lịch Chiếu</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
+
 <body class="bg-light p-5">
     <div class="container" style="max-width: 600px;">
         <div class="card shadow-sm border-0 rounded-3">
@@ -75,10 +79,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <label class="form-label fw-bold">Giờ chiếu</label>
                         <input type="time" name="show_time" class="form-control" required>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Định dạng</label>
+                        <select name="format" class="form-select" required>
+                            <option value="2D Sub">2D Sub</option>
+                            <option value="2D Lồng Tiếng">2D Lồng Tiếng</option>
+                            <option value="3D Sub">3D Sub</option>
+                            <option value="3D IMAX">3D IMAX</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Suất chiếu Hot</label>
+                        <select name="is_hot" class="form-select">
+                            <option value="0">Thường</option>
+                            <option value="1">Hot</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-warning w-100 fw-bold">LƯU SUẤT CHIẾU</button>
                 </form>
             </div>
         </div>
     </div>
 </body>
+
 </html>

@@ -102,33 +102,6 @@ $admin_name = isset($_SESSION['fullname']) ? $_SESSION['fullname'] : 'Admin';
             </div>
         </header>
 
-        <div class="row g-4 mb-4">
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="stat-card bg-gradient-blue">
-                    <h3 class="fw-bold fs-1">12</h3>
-                    <p class="mb-0 fs-5 opacity-75"><i class="bi bi-film me-2"></i>Phim trong kho</p>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="stat-card bg-gradient-green">
-                    <h3 class="fw-bold fs-1">340</h3>
-                    <p class="mb-0 fs-5 opacity-75"><i class="bi bi-ticket me-2"></i>Vé đã bán</p>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="stat-card bg-gradient-orange text-dark">
-                    <h3 class="fw-bold fs-1">15</h3>
-                    <p class="mb-0 fs-5 opacity-75"><i class="bi bi-calendar-check me-2"></i>Suất chiếu hôm nay</p>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-xl-3">
-                <div class="stat-card bg-gradient-red">
-                    <h3 class="fw-bold fs-1">24.5M</h3>
-                    <p class="mb-0 fs-5 opacity-75"><i class="bi bi-cash-coin me-2"></i>Doanh thu (VNĐ)</p>
-                </div>
-            </div>
-        </div>
-
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-body text-center p-5">
                 <i class="bi bi-rocket-takeoff text-secondary opacity-25" style="font-size: 5rem;"></i>
