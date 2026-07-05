@@ -27,24 +27,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute(['username' => $username]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Kiểm tra mật khẩu (Hiện tại test bằng mật khẩu thô. Sau này nâng cấp bảo mật sẽ dùng password_verify)
-            if ($user && $password === $user['password']) {
-                
-                // Đăng nhập thành công -> Lưu thông tin vào Session
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['fullname'] = $user['fullname'];
-                $_SESSION['user_role'] = $user['role'];
+            if ($user) {
+                $is_password_correct = false;
 
-                // PHÂN LUỒNG TỰ ĐỘNG BẰNG ROLE
-                if ($user['role'] == 1) {
-                    // Trùm cuối (Admin) -> Bay vào bảng điều khiển
-                    header("Location: admin/dashboard.php");
-                } else {
-                    // Thành viên thường -> Bay ra trang chủ xem phim
-                    header("Location: index.php");
+                // TH1: Kiểm tra bằng password_verify đối với mật khẩu đã mã hóa của tài khoản mới
+                if (password_verify($password, $user['password'])) {
+                    $is_password_correct = true;
+                } 
+                // TH2: Châm chước kiểm tra thô đối với tài khoản admin cũ ("admin123")
+                elseif ($password === $user['password']) {
+                    $is_password_correct = true;
                 }
-                exit;
+
+                // Nếu rơi vào 1 trong 2 trường hợp hợp lệ trên
+                if ($is_password_correct) {
+                    // Đăng nhập thành công -> Lưu thông tin vào Session
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['fullname'] = $user['fullname'];
+                    $_SESSION['user_role'] = $user['role'];
+
+                    // PHÂN LUỒNG TỰ ĐỘNG BẰNG ROLE
+                    if ($user['role'] == 1) {
+                        // Trùm cuối (Admin) -> Bay vào bảng điều khiển
+                        header("Location: admin/dashboard.php");
+                    } else {
+                        // Thành viên thường -> Bay ra trang chủ xem phim
+                        header("Location: index.php");
+                    }
+                    exit;
+                } else {
+                    $error_msg = "Tài khoản hoặc mật khẩu không chính xác!";
+                }
             } else {
                 $error_msg = "Tài khoản hoặc mật khẩu không chính xác!";
             }
